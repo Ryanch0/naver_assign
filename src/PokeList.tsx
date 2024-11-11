@@ -5,11 +5,10 @@ type Type = {
     handlePrev: () => void,
     handleNext: () => void,
     hoverNext?: () => void,
-    hoverPrev?: () => void
     offset: number
 }
 
-const PokeList = ({ data, handlePrev, handleNext, offset, hoverNext, hoverPrev }: Type) => {
+const PokeList = ({ data, handlePrev, handleNext, offset, hoverNext}: Type) => {
     return (
         <>
             <ul>
@@ -22,11 +21,11 @@ const PokeList = ({ data, handlePrev, handleNext, offset, hoverNext, hoverPrev }
             <button
                 disabled={offset === 0}
                 onClick={handlePrev}
-                onMouseEnter={hoverPrev}
             >Prev</button>
             <button
                 onClick={handleNext}
-                onMouseEnter={hoverNext}>Next</button>
+                onMouseEnter={hoverNext}
+                >Next</button>
         </>
     )
 }

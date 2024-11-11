@@ -34,15 +34,9 @@ const ReactQuery3 = () => {
         queryFn: () => fetchPokeList(offsetParams)
     })
 
-    const handleNextPage = () => {
+    const handlePagination = (val: number) => {
         setParams({
-            offset: `${offsetParams + 1}`
-        })
-    }
-
-    const handlePrevPage = () => {
-        setParams({
-            offset: `${offsetParams - 1}`
+            offset: `${offsetParams + val}`
         })
     }
     return (
@@ -50,8 +44,8 @@ const ReactQuery3 = () => {
             {data &&
                 <PokeList
                     data={data}
-                    handleNext={handleNextPage}
-                    handlePrev={handlePrevPage}
+                    handleNext={()=>handlePagination(1)}
+                    handlePrev={()=>handlePagination(-1)}
                     offset={offsetParams}
                 />}
             {isError && <Error error={error.message} />}

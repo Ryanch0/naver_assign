@@ -12,58 +12,52 @@ const ReactQuery2 = () => {
     const navigate = useNavigate()
     const offsetParams = Number(params.get('offset'))
 
-    useEffect(()=>{
+    useEffect(() => {
         if (!offsetParams) {
             navigate('/reactQuery2?offset=0', { replace: true })
         }
-    },[offsetParams,navigate])
+    }, [offsetParams, navigate])
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['pokeList', offsetParams],
         queryFn: () => fetchPokeList(offsetParams)
     })
 
-    const handleNextPage = () => {
+    const handlePagination = (val: number) => {
         setParams({
-            offset: `${offsetParams + 1}`
-        })
-    }
-
-    const handlePrevPage = () => {
-        setParams({
-            offset: `${offsetParams - 1}`
+            offset: `${offsetParams + val}`
         })
     }
 
     const handleHoverNextPage = () => {
         const nextOffset = offsetParams + 1
-        queryClient.prefetchQuery({
-            queryKey:['pokeList',nextOffset],
-            queryFn: () => fetchPokeList(nextOffset)
-        })
+            queryClient.prefetchQuery({
+                queryKey: ['pokeList', nextOffset],
+                queryFn: () => fetchPokeList(nextOffset)
+            })
+            console.log(nextOffset)
     }
 
-    
-    //사실 이건 의미없는기능이지만 넣었습니다
-    const handleHoverPrevPage = () => {
-        const prevOffset = offsetParams -1
-        queryClient.prefetchQuery({
-            queryKey:['pokeList',prevOffset],
-            queryFn: () => fetchPokeList(prevOffset)
-        })
-    }
+    // 버튼을 떠나지 않고 계속 hover를 한다면 프리패치는 이전의 프리패치 offset으로 같은 요청만 날리게됩니다.
+    // 따라서 아래와 같은 방식을 사용하면 그 문제는 해결할 수 있지만 이렇게하면 마우스 호버시의 프리패치의 의미가 사라집니다.
+    // useEffect(()=>{
+    //     handleHoverNextPage()
+    // },[offsetParams])
+
+    // 다른 대안으로 setInterval을 ref에 담고 onMouseLeave했을때 타이머를 초기화하는 방법도 생각해봤으나
+    // 그다지 좋은 옵션은 아니었습니다.
 
     return (
         <>
-            {data && 
-            <PokeList
-                data={data}
-                handleNext={handleNextPage} 
-                handlePrev={handlePrevPage}
-                offset={offsetParams}
-                hoverNext={handleHoverNextPage}
-                hoverPrev={handleHoverPrevPage}/>}
-            {isError && <Error error={error.message}/>}
+            {data &&
+                <PokeList
+                    data={data}
+                    handleNext={() => handlePagination(1)}
+                    handlePrev={() => handlePagination(-1)}
+                    offset={offsetParams}
+                    hoverNext={handleHoverNextPage}
+                />}
+            {isError && <Error error={error.message} />}
             {isLoading && <p>Loading</p>}
         </>
     )

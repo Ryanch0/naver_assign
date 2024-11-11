@@ -11,27 +11,21 @@ const ReactQuery1 = () => {
     const [params, setParams] = useSearchParams()
     const navigate = useNavigate()
     const offsetParams = Number(params.get('offset'))
-    
-    useEffect(()=>{
+
+    useEffect(() => {
         if (!offsetParams) {
             navigate('/reactQuery1?offset=0', { replace: true })
         }
-    },[offsetParams,navigate])
+    }, [offsetParams, navigate])
 
     const { data, isLoading, isError, error } = useQuery({
         queryKey: ['pokeList', offsetParams],
         queryFn: () => fetchPokeList(offsetParams)
     })
 
-    const handleNextPage = () => {
+    const handlePagination = (val: number) => {
         setParams({
-            offset: `${offsetParams + 1}`
-        })
-    }
-
-    const handlePrevPage = () => {
-        setParams({
-            offset: `${offsetParams - 1}`
+            offset: `${offsetParams + val}`
         })
     }
     return (
@@ -39,8 +33,8 @@ const ReactQuery1 = () => {
             {data &&
                 <PokeList
                     data={data}
-                    handleNext={handleNextPage}
-                    handlePrev={handlePrevPage}
+                    handleNext={() => handlePagination(1)}
+                    handlePrev={() => handlePagination(-1)}
                     offset={offsetParams} />}
             {isError && <Error error={error.message} />}
             {isLoading && <p>Loading</p>}
