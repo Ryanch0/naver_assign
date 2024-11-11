@@ -1,15 +1,15 @@
 import { useQuery } from "@tanstack/react-query"
 import { fetchPokeList, queryClient } from "./api"
-import { useSearchParams } from "react-router-dom"
+import { LoaderFunctionArgs, useSearchParams } from "react-router-dom"
 import PokeList from "./PokeList"
 import Error from "./Error"
 import PrevButton from "./PrevButton"
 import NextButton from "./NextButton"
 
 
-export const loader = async ({ request }: { request: { url: string } }) => {
+export const loader = async ({ request }: LoaderFunctionArgs) => {
     const url = new URL(request.url)
-    const offset = Number(url.searchParams.get('offset')) + 1
+    const offset = Number(url.searchParams.get('offset')) || 0
     console.log(offset)
     await queryClient.prefetchQuery({
         queryKey: ['pokeList', offset],
