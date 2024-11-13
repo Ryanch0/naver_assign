@@ -1,32 +1,19 @@
+import { FC, PropsWithChildren } from "react"
 import { RootObject } from "./api"
 
 type Type = {
-    data: RootObject,
-    handlePrev: () => void,
-    handleNext: () => void,
-    hoverNext?: () => void,
-    offset: number
+    data: RootObject
 }
 
-const PokeList = ({ data, handlePrev, handleNext, offset, hoverNext}: Type) => {
+const PokeList: FC<PropsWithChildren<Type>> = ({ data }) => {
     return (
-        <>
-            <ul>
-                {data?.results.map(item => {
-                    return <li key={item.name}>
-                        {item.name}
-                    </li>
-                })}
-            </ul>
-            <button
-                disabled={offset === 0}
-                onClick={handlePrev}
-            >Prev</button>
-            <button
-                onClick={handleNext}
-                onMouseEnter={hoverNext}
-                >Next</button>
-        </>
+        <ul>
+            {data?.results.map(item => {
+                return <li key={item.name}>
+                    {item.name}
+                </li>
+            })}
+        </ul>
     )
 }
 
